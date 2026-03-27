@@ -430,8 +430,9 @@
             let total = 0;
             configNormativa.forEach(c => {
                 const v = vals[c.id];
-                if(c.tipo === 'check') { if(v && v !== 'false' && v !== false) total += c.valor; }
-                else { total += (parseInt(v)||0) * c.valor; }
+                const itemValor = Number(c.valor) || 0;
+                if(c.tipo === 'check') { if(v && v !== 'false' && v !== false) total += itemValor; }
+                else { total += (parseInt(v)||0) * itemValor; }
             });
             return total;
         }
@@ -584,10 +585,12 @@
         function renderConfigItems() {
             const div = document.getElementById('config-items-container'); div.innerHTML = "";
             configNormativa.forEach((c, idx) => {
+                const safeNombre = c.nombre.replace(/"/g, '&quot;');
+                const safeValor = String(c.valor).replace(/"/g, '&quot;');
                 div.innerHTML += `<div class="config-row">
-                    <div style="flex:2"><label style="font-size:10px">Nombre</label><input class="form-input" value="${c.nombre}" onchange="configNormativa[${idx}].nombre=this.value"></div>
-                    <div style="flex:1"><label style="font-size:10px">Tipo</label><select class="form-input" onchange="configNormativa[${idx}].tipo=this.value"><option value="check" ${c.tipo=='check'?'selected':''}>Texto</option><option value="number" ${c.tipo=='number'?'selected':''}>Num</option></select></div>
-                    <div style="flex:1"><label style="font-size:10px">Valor</label><input type="number" class="form-input" value="${c.valor}" onchange="configNormativa[${idx}].valor=parseInt(this.value)"></div>
+                    <div style="flex:2"><label style="font-size:10px">Nombre</label><input class="form-input" value="${safeNombre}" onchange="configNormativa[${idx}].nombre=this.value"></div>
+                    <div style="flex:1"><label style="font-size:10px">Tipo</label><select class="form-input" onchange="configNormativa[${idx}].tipo=this.value; renderConfigItems();"><option value="check" ${c.tipo=='check'?'selected':''}>Texto</option><option value="number" ${c.tipo=='number'?'selected':''}>Num</option></select></div>
+                    <div style="flex:1"><label style="font-size:10px">Valor</label><input type="${c.tipo === 'check' ? 'text' : 'number'}" class="form-input" value="${safeValor}" onchange="configNormativa[${idx}].valor= (configNormativa[${idx}].tipo === 'number' ? (parseInt(this.value)||0) : this.value)"></div>
                     <button type="button" onclick="eliminarActividadConfig(${idx})" style="color:red;border:none;background:none;font-weight:bold;">X</button>
                 </div>`;
             });
