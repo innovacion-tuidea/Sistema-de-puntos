@@ -132,6 +132,7 @@
                 </div>
                 <div class="actions">
                     <button id="btn-volver-admin" class="btn-config" onclick="location.reload()" style="display:none; background-color:#475569; color:white;">⬅ Acceder como Admin</button>
+                    <button id="btn-logout" class="btn-main" onclick="location.reload()" style="display:none; background-color:var(--danger);">🚪 Cerrar Sesión</button>
 
                     <button id="btn-config-global" class="btn-config" onclick="abrirConfig()">⚙️</button>
                     <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
@@ -266,6 +267,7 @@
             document.getElementById('btn-config-global').style.display = 'none';
             document.getElementById('btn-nuevo-global').style.display = 'none';
             document.getElementById('btn-volver-admin').style.display = 'flex';
+            document.getElementById('btn-logout').style.display = 'none';
 
             // MOSTRAR VISUALES MOTIVADORES
             document.getElementById('ticker-bar').style.display = 'block';
@@ -299,6 +301,7 @@
                     document.getElementById('btn-config-global').style.display = 'flex';
                     document.getElementById('btn-nuevo-global').style.display = 'flex';
                     document.getElementById('btn-volver-admin').style.display = 'none';
+                    document.getElementById('btn-logout').style.display = 'flex';
 
                     // Asegurar que NO se muestren efectos de gestor
                     document.getElementById('ticker-bar').style.display = 'none';
