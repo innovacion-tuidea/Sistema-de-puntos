@@ -345,7 +345,7 @@
             let valores = {};
             configNormativa.forEach(item => {
                 const el = document.getElementById(`field_${item.id}`);
-                valores[item.id] = item.tipo === 'check' ? el.checked : (parseInt(el.value)||0);
+                valores[item.id] = item.tipo === 'check' ? el.value : (parseInt(el.value)||0);
             });
 
             if (indiceEdicion === -1 && datos.find(d => d.id == idInput)) {
@@ -430,7 +430,7 @@
             let total = 0;
             configNormativa.forEach(c => {
                 const v = vals[c.id];
-                if(c.tipo === 'check') { if(v === true || v === 'true') total += c.valor; }
+                if(c.tipo === 'check') { if(v && v !== 'false' && v !== false) total += c.valor; }
                 else { total += (parseInt(v)||0) * c.valor; }
             });
             return total;
@@ -479,7 +479,7 @@
                 
                 configNormativa.forEach(c => {
                     const val = d.valores[c.id];
-                    tr += `<td style="text-align:center">${c.tipo==='check' ? (val?'✅':'-') : (val||'-')}</td>`;
+                    tr += `<td style="text-align:center">${c.tipo==='check' ? (val && val !== 'false' ? val : '-') : (val||'-')}</td>`;
                 });
 
                 const claseAcciones = esModoLectura ? 'oculto-para-gestor' : '';
@@ -552,7 +552,7 @@
             configNormativa.forEach(c => {
                 let html = `<div style="margin-bottom:10px;">`;
                 if(c.tipo === 'check') {
-                    html += `<label style="display:flex;align-items:center;gap:10px;border:1px solid #eee;padding:10px;border-radius:8px;"><input type="checkbox" id="field_${c.id}" onchange="calcularTotalEnVivo()" ${vals[c.id]?'checked':''}> ${c.nombre} (+${c.valor})</label>`;
+                    html += `<label class="form-label">${c.nombre} (${c.valor} pts)</label><input type="text" id="field_${c.id}" class="form-input" value="${vals[c.id]||''}" oninput="calcularTotalEnVivo()">`;
                 } else {
                     html += `<label class="form-label">${c.nombre} (${c.valor} pts/u)</label><input type="number" id="field_${c.id}" class="form-input" value="${vals[c.id]||0}" oninput="calcularTotalEnVivo()">`;
                 }
@@ -570,7 +570,7 @@
             let temp = {};
             configNormativa.forEach(c => {
                 const el = document.getElementById(`field_${c.id}`);
-                temp[c.id] = c.tipo==='check' ? el.checked : (parseInt(el.value)||0);
+                temp[c.id] = c.tipo==='check' ? el.value : (parseInt(el.value)||0);
             });
             document.getElementById('preview-total').textContent = calcularPuntos(temp).toLocaleString();
         }
@@ -586,7 +586,7 @@
             configNormativa.forEach((c, idx) => {
                 div.innerHTML += `<div class="config-row">
                     <div style="flex:2"><label style="font-size:10px">Nombre</label><input class="form-input" value="${c.nombre}" onchange="configNormativa[${idx}].nombre=this.value"></div>
-                    <div style="flex:1"><label style="font-size:10px">Tipo</label><select class="form-input" onchange="configNormativa[${idx}].tipo=this.value"><option value="check" ${c.tipo=='check'?'selected':''}>Check</option><option value="number" ${c.tipo=='number'?'selected':''}>Num</option></select></div>
+                    <div style="flex:1"><label style="font-size:10px">Tipo</label><select class="form-input" onchange="configNormativa[${idx}].tipo=this.value"><option value="check" ${c.tipo=='check'?'selected':''}>Texto</option><option value="number" ${c.tipo=='number'?'selected':''}>Num</option></select></div>
                     <div style="flex:1"><label style="font-size:10px">Valor</label><input type="number" class="form-input" value="${c.valor}" onchange="configNormativa[${idx}].valor=parseInt(this.value)"></div>
                     <button type="button" onclick="eliminarActividadConfig(${idx})" style="color:red;border:none;background:none;font-weight:bold;">X</button>
                 </div>`;
